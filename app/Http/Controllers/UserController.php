@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Validation\Rules\Password;
 
 
 class UserController extends Controller
@@ -20,12 +21,9 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view();
+        return view('users.create')->with('sucesso', 'Usuário cadastrado com sucesso!');
     }
 
     /**
@@ -39,7 +37,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(string $id)
     {
         return User::findOrFail($id);
     }
@@ -47,15 +45,12 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(int $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         $user = User::findOrFail($id);
 
@@ -64,21 +59,20 @@ class UserController extends Controller
         User::update($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        user::delete($id);
     }
 
     private function validation(Request $request) : Request
     {
         return $request->validate([
             'name' => ['required', 'min:3', 'max:255'],
-            'email' => ['required', 'email:rfc', 'unique:users.email'],
+            'email' => ['required', 'email:rfc', 'unique:users,email'],
             'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
-            'phone' => ['required', 'unique:users.phone']
+            'phone' => ['required', 'unique:users,phone', 'regex:/^\(\d{2}\)\s\d{5}\-\d{4}$/']
         ], [
             'name.required' => 'O nome é obrigatório',
             'name.min' => 'Nome inválido',
@@ -91,7 +85,8 @@ class UserController extends Controller
             'password.required' => 'A senha é obrigatória',
 
             'phone.required' => 'O telefone é obrigatório',
-            'phone.unique' => 'Telefone já cadastrado'
+            'phone.unique' => 'Telefone já cadastrado',
+            'phone.regex' => 'O telefone deve estar no formato (XX) 9XXXX-XXXX'
         ]);
     }
 }
