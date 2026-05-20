@@ -1,6 +1,6 @@
 
-<header>  
-    <span class="logotipo">Dev</span>
+<header>
+    <img src="{{ asset('img/logo.png') }}" class="logotipo" width="300">
     <nav>
         <ul class="nav-links">
             <li><a href="#">Serviços</a></li>
