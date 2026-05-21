@@ -1,4 +1,3 @@
-
 <header>
     <img src="{{ asset('img/logo.png') }}" class="logotipo" width="300">
     <nav>

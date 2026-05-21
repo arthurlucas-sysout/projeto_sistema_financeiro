@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 
 
 class UserController extends Controller
@@ -19,52 +20,82 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    public function create() // Exibir tela de criação
+
+    public function create(Request $request)
     {
-        return view('users.create');
+        $user = new User();
+
+        return view('users.create', compact('user'));
     }
+
 
     public function store(Request $request) // Criar um usuário
     {
         $user = $this->validation($request);
         User::create($user);
 
-        return redirect('/users')->with('success', 'Cadastro realizado com sucesso!');
+        return redirect()->route('users.index')->with('sucess', 'Cadastro realizado com sucesso!');
     }
+
 
     public function show(int $id) // Buscar um usuário por id
     {
         return User::findOrFail($id);
     }
 
+
     public function edit(int $id) // Exibir tela de edição
     {
-        //
+        $user = User::findOrFail($id);
+
+        if (!$user) {
+            return view('users.create')->with('danger', 'Usuário não encontrado!');
+        }
+
+        return view('users.create', compact('user'));
     }
+
 
     public function update(Request $request, int $id) // Atualizar um usuário conforme um id
     {
         $user = User::findOrFail($id);
 
-        this->validation($user);
+        $validated = $this->validation($request, $id);
 
-        User::update($user);
+        if (empty($validated['password'])) // empty verifica se é null, "", vazio
+            unset($validated['password']); //remove o campo password antes de salvar e quando o método update for chamado, a senha do banco permanece
+
+        $user->update($validated);
+
+        return redirect()->route('users.index')->with('sucess', 'Usuário atualizado com sucesso!');
     }
+
 
     public function destroy(int $id) // Deletar um usuário conforme um id
     {
         $user = User::findOrFail($id);
 
-        $user::delete();
+        $user->delete();
+
+        return redirect()->back()->with('sucess', 'Usuário deletado com sucesso!');
     }
 
-    private function validation(Request $request)
+
+    private function validation(Request $request, int $id = null)
     {
+        $uniqueEmail = Rule::unique('users', 'email');
+        $uniquePhone = Rule::unique('users', 'phone');
+
+        if ($request->id) {
+            $uniqueEmail ->ignore($id);
+            $uniquePhone->ignore($id);
+        }
+
         return $request->validate([
             'name' => ['required', 'min:3', 'max:255'],
-            'email' => ['required', 'email:rfc', 'unique:users,email'],
-            'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
-            'phone' => ['required', 'unique:users,phone', 'regex:/^\(\d{2}\)\s\d{5}\-\d{4}$/'],
+            'email' => ['required', 'email:rfc',  $uniqueEmail],
+            'password' => [$id ? 'nullable' : 'required', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'phone' => ['required', $uniquePhone, 'regex:/^\(\d{2}\)\s\d{5}\-\d{4}$/'],
         ], [
             'name.required' => 'O nome é obrigatório',
             'name.min' => 'Nome inválido',
@@ -76,7 +107,7 @@ class UserController extends Controller
 
             'password.required' => 'A senha é obrigatória',
             'password.min' => 'A senha deve ter no mínimo 8 caracteres',
-            'password.mixed' => 'A senha deve ter letras maiúsculas e minúsculas',
+            'password.mixed_case' => 'A senha deve ter letras maiúsculas e minúsculas',
             'password.numbers' => 'A senha deve ter pelo menos um número',
             'password.symbols' => 'A senha deve ter pelo menos um caracter especial',
 

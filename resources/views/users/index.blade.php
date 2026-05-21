@@ -2,40 +2,48 @@
 
 @section('content')
 
-<h1> Listagem de usuários</h1>
+    <h1> Listagem de usuários</h1>
 
     @include('components.flash-message')
 
-<table>
-
-    @if ($users)
-        <form action="/users" method="POST"></form>
-    @endif
-
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Telefone</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @if ($users)
-            @foreach ($users as $user)
+    <table>
+        @include('components.errors')
+        <thead>
             <tr>
-                <td> {{ $user->name }} </td>
-                <td>{{ $user->email }} </td>
-                <td> {{ $user->phone }} </td>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Ações</th>
             </tr>
-            @endforeach
+        </thead>
 
-        @else
+        <tbody>
+            @if ($users)
+                @foreach ($users as $user)
+                    <tr>
+                        <td> {{ $user->name }} </td>
+                        <td>{{ $user->email }} </td>
+                        <td> {{ $user->phone }} </td>
 
-        <h2>Nenhum usuário cadastrado</h2>
+                        <td>
+                            <a href="{{ url('/users/' . $user->id . '/edit') }}">
+                                <button>Atualizar</button>
+                            </a>
 
-        @endif
+                            <form action="{{ url("/users/$user->id") }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="imput">Deletar</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            @else
+                <h2>Nenhum usuário cadastrado!</h2>
+            @endif
+        </tbody>
+    </table>
 
-    </tbody>
-</table>
+    <br>
+    <a href="/users/create">Cadastrar Usuário</a>
 @endsection

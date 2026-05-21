@@ -7,7 +7,7 @@ Route::group([
     'as' => 'users.'
 ], function(){
 
-    Route::get('/', [UserController::class, 'index']); // Buscar todos os usuários
+    Route::get('/', [UserController::class, 'index'])->name('index'); // Buscar todos os usuários
 
     Route::get('/create', [UserController::class, 'create'])->name('create'); // Exibir tela de criação
 
