@@ -18,7 +18,7 @@ class LoginController extends Controller
             'password.required' => 'A senha é obrigatória',
         ]);
 
-        if (Auth::attempt($credenciais)) {
+        if (Auth::attempt($credenciais, $request->remember)) {
             $request->session()->regenerate();
             return redirect()->intended('/home'); //redireciona o usuário para a página onde o usuário tentou acessar antes de fazer login
         }

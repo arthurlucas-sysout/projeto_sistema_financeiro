@@ -4,7 +4,7 @@
         <ul class="nav-links">
             <li><a href="#">Serviços</a></li>
             <li><a href="#">Projetos</a></li>
-            <li><a href="#">Blog</a></li>
+            <li><a href="">Login</a></li>
         </ul>
         <a href=""><button>Contato</button></a>
     </nav>

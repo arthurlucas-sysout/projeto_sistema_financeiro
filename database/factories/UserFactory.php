@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends Factory<User>
- */
+
 class UserFactory extends Factory
 {
 
@@ -22,6 +20,8 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
             'phone' => fake()->numerify('(##) #####-####'),
+            'remember_token' => Str::random(10),
+            'role' => ('user'),
         ];
     }
 }

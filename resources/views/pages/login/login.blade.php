@@ -23,6 +23,10 @@
         <br>
 
         <button type="submit">Login</button>
+        <br>
+
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember">Lembrar-me</label>
 
         <br>
         <a href="/users/create">Não possui cadastro? Registre-se</a>
