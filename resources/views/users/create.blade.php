@@ -39,6 +39,14 @@
         <button type="submit">Cadastrar</button>
     </form>
 
+    @if ($user->id)
+        <form action="{{ url("/users/$user->id") }}" method="POST">
+            @csrf
+            @method('DELETE')
+        <button type="imput" style="color: red">Apagar conta</button>
+        </form>
+    @endif
+
     <br>
     <a href="/users">Voltar</a>
 @endsection

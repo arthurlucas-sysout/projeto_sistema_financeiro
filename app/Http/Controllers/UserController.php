@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use APP\UserRole;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rule;
 
@@ -40,17 +41,22 @@ class UserController extends Controller
 
     public function show(int $id) // Buscar um usuário por id
     {
-        return User::findOrFail($id);
+        $user = User::findOrFail($id);
+
+        return view('users.create', compact('user'));
     }
 
 
     public function edit(int $id) // Exibir tela de edição
     {
+
         $user = User::findOrFail($id);
 
-        if (!$user) {
+
+        $this->authorize('delete', $user);
+
+        if (!$user)
             return view('users.create')->with('danger', 'Usuário não encontrado!');
-        }
 
         return view('users.create', compact('user'));
     }
@@ -59,6 +65,8 @@ class UserController extends Controller
     public function update(Request $request, int $id) // Atualizar um usuário conforme um id
     {
         $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
 
         $validated = $this->validation($request, $id);
 
@@ -75,9 +83,14 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $this->authorize('delete', $user);
+
         $user->delete();
 
-        return redirect()->back()->with('sucess', 'Usuário deletado com sucesso!');
+        if(auth()->user()->role === UserRole::ADMIN)
+        return redirect()->route('users.index')->with('sucess', 'Usuário deletado com sucesso!');
+
+        return redirect('home');
     }
 
 
