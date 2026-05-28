@@ -8,3 +8,5 @@ require __DIR__ . '/resources/users.php';
 require __DIR__ . '/resources/login.php';
 
 require __DIR__ . '/resources/home.php';
+
+require __DIR__ . '/resources/dashboard.php';

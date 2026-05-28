@@ -2,22 +2,22 @@
 
 use App\Http\Controllers\UserController;
 
-Route::group([
-    'prefix' => 'users',
-    'as' => 'users.'
-], function(){
+Route::controller(UserController::class)
+    ->prefix('users')
+    ->as('users.')
+    ->group(function () {
 
-    Route::get('/', [UserController::class, 'index'])->name('index')->middleware(['auth', 'role']); // Buscar todos os usuários
+        Route::get('/', 'index')->name('index')->middleware(['auth', 'role']);
 
-    Route::get('/create', [UserController::class, 'create'])->name('create'); // Exibir tela de criação
+        Route::get('/create', 'create')->name('create');
 
-    Route::post('/', [UserController::class, 'store'])->name('store'); // Criar um usuário
+        Route::post('/', 'store')->name('store');
 
-    Route::get('/{id}', [UserController::class, 'show'])->name('show')->middleware(['auth', 'role']); ; // Buscar um usuário por id
+        Route::get('/{id}', 'show')->name('show')->middleware(['auth', 'role']);
 
-    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit')->middleware(['auth']); // Exibir tela de edição
+        Route::get('/{id}/edit', 'edit')->name('edit')->middleware(['auth']);
 
-    Route::put('/{id}', [UserController::class, 'update'])->name('update')->middleware(['auth']); // Atualizar um usuário conforme um id
+        Route::put('/{id}', 'update')->name('update')->middleware(['auth']);
 
-    Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy')->middleware(['auth']); // Deletar um usuário conforme um id
+        Route::delete('/{id}', 'destroy')->name('destroy')->middleware(['auth']);
 });

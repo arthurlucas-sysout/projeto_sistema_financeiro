@@ -20,7 +20,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credenciais, $request->remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/home'); //redireciona o usuário para a página onde o usuário tentou acessar antes de fazer login
+            return redirect()->intended('/dashboard'); //redireciona o usuário para a página onde o usuário tentou acessar antes de fazer login
         }
 
         return redirect()->back()->with('erro', 'Login ou senha inválidos');
